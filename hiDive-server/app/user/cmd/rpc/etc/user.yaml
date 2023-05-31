@@ -1,0 +1,11 @@
+Name: user.rpc
+ListenOn: 0.0.0.0:8080
+Mysql:
+  DataSource: root:root@tcp(127.0.0.1:33068)/hidive_user?charset=utf8mb4&parseTime=true
+Etcd:
+  Hosts:
+  - 127.0.0.1:2379
+  Key: user.rpc
+CacheRedis:
+  - Host: 127.0.0.1:6379
+    Type: node

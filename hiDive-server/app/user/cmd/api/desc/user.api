@@ -1,0 +1,34 @@
+@server (
+	prefix:user/v1
+)
+service user-api {
+	@handler UserHandler
+	get /from/:name (Request) returns (Response)
+	
+	@handler LoginHandler
+	post /login (LoginReq) returns (LoginResp)
+}
+
+type Request {
+	Name string `path:"name,options=you|me"`
+}
+
+type Response {
+	Message string `json:"message"`
+}
+
+type LoginReq {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type LoginResp {
+	StatusCode int64     `json:"status_code"`
+	Message    string    `json:"message"`
+	Data       TokenInfo `json:"data"`
+}
+type TokenInfo {
+	AccessToken  string `json:"access_token"`
+	AccessExpire int64  `json:"access_expire"`
+	RefreshAfter int64  `json:"refresh_after"`
+}
