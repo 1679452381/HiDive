@@ -1,0 +1,46 @@
+version: '3'
+services:
+  Etcd:
+    container_name: etcd_hiDive
+    image: bitnami/etcd:${ETCD_VERSION}
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+    privileged: true
+    volumes:
+      - ./data/etcd/data:/bitnami/etcd/data
+    ports:
+      - ${ETCD_PORT}:2379
+      - 2380:2380
+  mysql:
+    container_name: mysql_hiDive
+    image: mysql:${MYSQL_VERSION}
+    restart: always
+    privileged: true
+    ports:
+      - ${MYSQL_PORT}:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./data/mysql/data:/var/lib/mysql
+      - ./data/mysql/conf:/etc/mysql/conf.d/
+      - ./data/mysql/logs:/logs
+    command:
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --explicit_defaults_for_timestamp=true
+      --lower_case_table_names=1
+
+  Redis:
+    container_name: redis_hiDive
+    image: redis:${REDIS_VERSION}
+    restart: always
+    ports:
+      - ${REDIS_PORT}:6379
+    volumes:
+      - ./data/redis/data:/data
+      - ./data/redis/redis.conf:/etc/redis/redis.conf

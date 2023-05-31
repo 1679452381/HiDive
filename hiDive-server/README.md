@@ -1,10 +1,15 @@
 ## 视频网站后台
 
+
+## 需要的包
+```shell
+go get -u github.com/zeromicro/go-zero
+
+```
 ## api
         /user
         登录
         注册
-        登出
         查看用户信息
         关注用户
         取消关注用户
