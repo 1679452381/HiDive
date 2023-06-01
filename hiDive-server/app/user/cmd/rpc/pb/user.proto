@@ -3,6 +3,17 @@ syntax = "proto3";
 package user;
 option go_package="./user";
 
+
+service User {
+  rpc Ping(Request) returns(Response);
+  rpc login(LoginReq) returns(LoginResp);
+  //  rpc register(LoginReq) returns(LoginResp);
+  //  rpc getUserInfo(LoginReq) returns(LoginResp);
+  rpc generateToken(GenerateTokenReq) returns(GenerateTokenResp);
+  //  rpc followUser(LoginReq) returns(LoginResp);
+  //  rpc cancelFollow(LoginReq) returns(LoginResp);
+}
+
 message Request {
   string ping = 1;
 }
@@ -20,12 +31,12 @@ message LoginResp {
   int64 accessExpire = 2;
   int64 refreshAfter = 3;
 }
-service User {
-  rpc Ping(Request) returns(Response);
-  rpc login(LoginReq) returns(LoginResp);
-//  rpc register(LoginReq) returns(LoginResp);
-//  rpc getUserInfo(LoginReq) returns(LoginResp);
-//  rpc generateToken(LoginReq) returns(LoginResp);
-//  rpc followUser(LoginReq) returns(LoginResp);
-//  rpc cancelFollow(LoginReq) returns(LoginResp);
+
+message GenerateTokenReq {
+  int64 UserId = 1;
+}
+message GenerateTokenResp {
+  string  AccessToken = 1;
+  int64 AccessExpire = 2;
+  int64 RefreshAfter = 3;
 }

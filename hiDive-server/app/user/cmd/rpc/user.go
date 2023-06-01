@@ -6,7 +6,7 @@ import (
 	"hiDive-server/app/user/cmd/rpc/internal/config"
 	"hiDive-server/app/user/cmd/rpc/internal/server"
 	"hiDive-server/app/user/cmd/rpc/internal/svc"
-	"hiDive-server/app/user/cmd/rpc/pb"
+	"hiDive-server/app/user/cmd/rpc/pb/user"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
@@ -25,7 +25,7 @@ func main() {
 	ctx := svc.NewServiceContext(c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		pb.RegisterUserServer(grpcServer, server.NewUserServer(ctx))
+		user.RegisterUserServer(grpcServer, server.NewUserServer(ctx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)

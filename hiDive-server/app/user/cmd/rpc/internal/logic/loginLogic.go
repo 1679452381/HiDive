@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 	"hiDive-server/app/user/cmd/rpc/internal/svc"
-	"hiDive-server/app/user/cmd/rpc/pb"
+	"hiDive-server/app/user/cmd/rpc/pb/user"
 	"hiDive-server/app/user/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -25,7 +25,7 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 	}
 }
 
-func (l *LoginLogic) Login(in *pb.LoginReq) (*pb.LoginResp, error) {
+func (l *LoginLogic) Login(in *user.LoginReq) (*user.LoginResp, error) {
 	var err error
 	var userId int64
 	fmt.Println("rpc.................................")
@@ -34,7 +34,7 @@ func (l *LoginLogic) Login(in *pb.LoginReq) (*pb.LoginResp, error) {
 		return nil, err
 	}
 	fmt.Println("rpc.................................,", userId)
-	return &pb.LoginResp{
+	return &user.LoginResp{
 		AccessExpire: userId,
 	}, nil
 }

@@ -4,7 +4,7 @@
 // - protoc             v4.23.0
 // source: user.proto
 
-package pb
+package user
 
 import (
 	context "context"
@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	User_Ping_FullMethodName  = "/user.User/Ping"
-	User_Login_FullMethodName = "/user.User/login"
+	User_Ping_FullMethodName          = "/user.User/Ping"
+	User_Login_FullMethodName         = "/user.User/login"
+	User_GenerateToken_FullMethodName = "/user.User/generateToken"
 )
 
 // UserClient is the client API for User service.
@@ -29,6 +30,9 @@ const (
 type UserClient interface {
 	Ping(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
 	Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
+	// rpc register(LoginReq) returns(LoginResp);
+	// rpc getUserInfo(LoginReq) returns(LoginResp);
+	GenerateToken(ctx context.Context, in *GenerateTokenReq, opts ...grpc.CallOption) (*GenerateTokenResp, error)
 }
 
 type userClient struct {
@@ -57,12 +61,24 @@ func (c *userClient) Login(ctx context.Context, in *LoginReq, opts ...grpc.CallO
 	return out, nil
 }
 
+func (c *userClient) GenerateToken(ctx context.Context, in *GenerateTokenReq, opts ...grpc.CallOption) (*GenerateTokenResp, error) {
+	out := new(GenerateTokenResp)
+	err := c.cc.Invoke(ctx, User_GenerateToken_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
 type UserServer interface {
 	Ping(context.Context, *Request) (*Response, error)
 	Login(context.Context, *LoginReq) (*LoginResp, error)
+	// rpc register(LoginReq) returns(LoginResp);
+	// rpc getUserInfo(LoginReq) returns(LoginResp);
+	GenerateToken(context.Context, *GenerateTokenReq) (*GenerateTokenResp, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -75,6 +91,9 @@ func (UnimplementedUserServer) Ping(context.Context, *Request) (*Response, error
 }
 func (UnimplementedUserServer) Login(context.Context, *LoginReq) (*LoginResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+}
+func (UnimplementedUserServer) GenerateToken(context.Context, *GenerateTokenReq) (*GenerateTokenResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GenerateToken not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -125,6 +144,24 @@ func _User_Login_Handler(srv interface{}, ctx context.Context, dec func(interfac
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_GenerateToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GenerateTokenReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).GenerateToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_GenerateToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).GenerateToken(ctx, req.(*GenerateTokenReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -139,6 +176,10 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "login",
 			Handler:    _User_Login_Handler,
+		},
+		{
+			MethodName: "generateToken",
+			Handler:    _User_GenerateToken_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

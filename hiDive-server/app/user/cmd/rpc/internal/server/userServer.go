@@ -5,14 +5,15 @@ package server
 
 import (
 	"context"
-	logic2 "hiDive-server/app/user/cmd/rpc/internal/logic"
+
+	"hiDive-server/app/user/cmd/rpc/internal/logic"
 	"hiDive-server/app/user/cmd/rpc/internal/svc"
-	"hiDive-server/app/user/cmd/rpc/pb"
+	"hiDive-server/app/user/cmd/rpc/pb/user"
 )
 
 type UserServer struct {
 	svcCtx *svc.ServiceContext
-	pb.UnimplementedUserServer
+	user.UnimplementedUserServer
 }
 
 func NewUserServer(svcCtx *svc.ServiceContext) *UserServer {
@@ -21,12 +22,18 @@ func NewUserServer(svcCtx *svc.ServiceContext) *UserServer {
 	}
 }
 
-func (s *UserServer) Ping(ctx context.Context, in *pb.Request) (*pb.Response, error) {
-	l := logic2.NewPingLogic(ctx, s.svcCtx)
+func (s *UserServer) Ping(ctx context.Context, in *user.Request) (*user.Response, error) {
+	l := logic.NewPingLogic(ctx, s.svcCtx)
 	return l.Ping(in)
 }
 
-func (s *UserServer) Login(ctx context.Context, in *pb.LoginReq) (*pb.LoginResp, error) {
-	l := logic2.NewLoginLogic(ctx, s.svcCtx)
+func (s *UserServer) Login(ctx context.Context, in *user.LoginReq) (*user.LoginResp, error) {
+	l := logic.NewLoginLogic(ctx, s.svcCtx)
 	return l.Login(in)
+}
+
+// rpc register(LoginReq) returns(LoginResp);
+func (s *UserServer) GenerateToken(ctx context.Context, in *user.GenerateTokenReq) (*user.GenerateTokenResp, error) {
+	l := logic.NewGenerateTokenLogic(ctx, s.svcCtx)
+	return l.GenerateToken(in)
 }

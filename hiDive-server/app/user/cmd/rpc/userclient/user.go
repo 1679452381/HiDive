@@ -5,21 +5,26 @@ package userclient
 
 import (
 	"context"
-	"hiDive-server/app/user/cmd/rpc/pb"
+
+	"hiDive-server/app/user/cmd/rpc/pb/user"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
 )
 
 type (
-	LoginReq  = pb.LoginReq
-	LoginResp = pb.LoginResp
-	Request   = pb.Request
-	Response  = pb.Response
+	GenerateTokenReq  = user.GenerateTokenReq
+	GenerateTokenResp = user.GenerateTokenResp
+	LoginReq          = user.LoginReq
+	LoginResp         = user.LoginResp
+	Request           = user.Request
+	Response          = user.Response
 
 	User interface {
 		Ping(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
 		Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
+		// rpc register(LoginReq) returns(LoginResp);
+		GenerateToken(ctx context.Context, in *GenerateTokenReq, opts ...grpc.CallOption) (*GenerateTokenResp, error)
 	}
 
 	defaultUser struct {
@@ -34,11 +39,17 @@ func NewUser(cli zrpc.Client) User {
 }
 
 func (m *defaultUser) Ping(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
-	client := pb.NewUserClient(m.cli.Conn())
+	client := user.NewUserClient(m.cli.Conn())
 	return client.Ping(ctx, in, opts...)
 }
 
 func (m *defaultUser) Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error) {
-	client := pb.NewUserClient(m.cli.Conn())
+	client := user.NewUserClient(m.cli.Conn())
 	return client.Login(ctx, in, opts...)
+}
+
+// rpc register(LoginReq) returns(LoginResp);
+func (m *defaultUser) GenerateToken(ctx context.Context, in *GenerateTokenReq, opts ...grpc.CallOption) (*GenerateTokenResp, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.GenerateToken(ctx, in, opts...)
 }

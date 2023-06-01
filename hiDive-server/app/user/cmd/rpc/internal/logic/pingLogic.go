@@ -3,7 +3,7 @@ package logic
 import (
 	"context"
 	"hiDive-server/app/user/cmd/rpc/internal/svc"
-	"hiDive-server/app/user/cmd/rpc/pb"
+	"hiDive-server/app/user/cmd/rpc/pb/user"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -22,8 +22,8 @@ func NewPingLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PingLogic {
 	}
 }
 
-func (l *PingLogic) Ping(in *pb.Request) (*pb.Response, error) {
+func (l *PingLogic) Ping(in *user.Request) (*user.Response, error) {
 	// todo: add your logic here and delete this line
 
-	return &pb.Response{Pong: "1"}, nil
+	return &user.Response{Pong: "1"}, nil
 }
