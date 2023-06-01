@@ -3,6 +3,8 @@ package logic
 import (
 	"context"
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/pkg/errors"
+	"hiDive-server/common/errx"
 	"time"
 
 	"hiDive-server/app/user/cmd/rpc/internal/svc"
@@ -29,11 +31,11 @@ func NewGenerateTokenLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Gen
 func (l *GenerateTokenLogic) GenerateToken(in *user.GenerateTokenReq) (*user.GenerateTokenResp, error) {
 	//获取时间戳
 	now := time.Now().Unix()
-	accessSecret := l.svcCtx.Config.Auth.AccessSecret
-	accessExpire := l.svcCtx.Config.Auth.AccessExpire
+	accessSecret := l.svcCtx.Config.JwtAuth.AccessSecret
+	accessExpire := l.svcCtx.Config.JwtAuth.AccessExpire
 	token, err := l.getJwtToken(accessSecret, now, accessExpire, in.UserId)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrapf(errx.NewErrMsg("生成token失败"), "getJwtToken err userId:%d , err:%v", in.UserId, err)
 	}
 	return &user.GenerateTokenResp{
 		AccessToken:  token,

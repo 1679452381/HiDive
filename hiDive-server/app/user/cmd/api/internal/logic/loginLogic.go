@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"hiDive-server/app/user/cmd/rpc/userclient"
+	"hiDive-server/common/errx"
 	"net/http"
 
 	"hiDive-server/app/user/cmd/api/internal/svc"
@@ -34,7 +35,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 		Password: req.Password,
 	})
 	if err != nil {
-		return nil, err
+		return nil, errx.NewErrMsg(err.Error())
 	}
 	resp = &types.LoginResp{
 		StatusCode: http.StatusOK,
